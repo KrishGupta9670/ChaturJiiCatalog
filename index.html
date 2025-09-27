@@ -1,0 +1,240 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChaturJii Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #fdfdfd;
+}
+h1 {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 3em;
+  color: #1b2a49;
+  margin-bottom: 30px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+}
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+#search-box, #category-filter {
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  outline: none;
+  transition: all 0.3s ease;
+}
+#search-box:focus, #category-filter:focus {
+  border-color: #f4b41a;
+  box-shadow: 0 0 8px rgba(244,180,26,0.3);
+}
+#product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  justify-items: center;
+}
+.product-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 15px;
+  width: 230px;
+  text-align: center;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+.product-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+.product-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+.category-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75em;
+  border-radius: 15px;
+  margin-bottom: 8px;
+  color: #fff;
+  font-weight: bold;
+}
+.category-Dry\ Fruits { background: #4caf50; }
+.category-Giftings { background: #ff9800; }
+.category-Chocolates { background: #9c27b0; }
+.badge-new, .badge-best {
+  position: absolute;
+  top: 10px;
+  left: -10px;
+  background: #f4b41a;
+  color: #1b2a49;
+  font-weight: bold;
+  padding: 5px 12px;
+  border-radius: 0 15px 15px 0;
+  font-size: 0.75em;
+  transform: rotate(-10deg);
+}
+.product-card h3 {
+  font-size: 1.1em;
+  margin: 8px 0 5px 0;
+  color: #1b2a49;
+}
+.product-card p {
+  font-size: 0.85em;
+  margin: 5px 0;
+  color: #333;
+}
+.price {
+  font-weight: bold;
+  color: #f4b41a;
+  font-size: 1.1em;
+  margin-top: 5px;
+}
+.details-btn {
+  background: #1b2a49;
+  color: #f4b41a;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85em;
+  margin-top: 5px;
+  transition: all 0.3s ease;
+}
+.details-btn:hover {
+  background: #ffb800;
+  color: #1b2a49;
+}
+.details-box {
+  display: none;
+  background: #fdf6e3;
+  border: 1px solid #f4b41a;
+  border-radius: 15px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: left;
+  font-size: 0.85em;
+  color: #1b2a49;
+}
+.details-box p { margin: 5px 0; }
+@media(max-width: 600px){
+  .product-card { width: 90%; }
+  #controls { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<h1>ChaturJii Catalog</h1>
+
+<div id="controls">
+  <input type="text" id="search-box" placeholder="Search products...">
+  <select id="category-filter">
+    <option value="all">All Categories</option>
+    <option value="Dry Fruits">Dry Fruits</option>
+    <option value="Giftings">Giftings</option>
+    <option value="Chocolates">Chocolates</option>
+  </select>
+</div>
+
+<div id="product-list"></div>
+
+<script>
+const products = [
+  {
+    id: "p001",
+    name: "Pista Premium (200g)",
+    category: "Dry Fruits",
+    price: 220,
+    description: "High-quality pista, fresh and natural.",
+    image: "https://via.placeholder.com/250x200?text=Pista",
+    badge: "New",
+    details: "Handpicked, fresh, superior quality. Great for snacks or gifting."
+  },
+  {
+    id: "p002",
+    name: "Badam (500g)",
+    category: "Dry Fruits",
+    price: 450,
+    description: "Premium almonds, meetha grade.",
+    image: "https://via.placeholder.com/250x200?text=Badam",
+    details: "Carefully selected sweet grade almonds. Perfect for health and nutrition."
+  },
+  {
+    id: "p003",
+    name: "Diwali Gift Hamper - Budget",
+    category: "Giftings",
+    price: 48,
+    description: "Affordable Diwali hamper under ₹50.",
+    image: "https://via.placeholder.com/250x200?text=Hamper",
+    badge: "Best",
+    details: "Budget-friendly Diwali gift hamper including assorted goodies for family and friends."
+  }
+];
+
+function displayProducts(list){
+  const container = document.getElementById('product-list');
+  container.innerHTML = list.map(p => `
+    <div class="product-card">
+      ${p.badge ? `<div class="badge-${p.badge.toLowerCase()}">${p.badge}</div>` : ''}
+      <div class="category-badge category-${p.category.replace(/\s/g,'\\ ')}">${p.category}</div>
+      <img src="${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>${p.description}</p>
+      <p class="price">₹${p.price}</p>
+      <button class="details-btn" onclick="toggleDetails('${p.id}')">Show Details</button>
+      <div class="details-box" id="details-${p.id}">
+        <p><strong>Name:</strong> ${p.name}</p>
+        <p><strong>Price:</strong> ₹${p.price}</p>
+        <p><strong>Category:</strong> ${p.category}</p>
+        <p><strong>Highlights:</strong> ${p.details}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDetails(id){
+  const box = document.getElementById(`details-${id}`);
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+displayProducts(products);
+
+const searchBox = document.getElementById('search-box');
+const categoryFilter = document.getElementById('category-filter');
+
+function filterProducts() {
+  const query = searchBox.value.toLowerCase();
+  const category = categoryFilter.value;
+  const filtered = products.filter(p =>
+    (p.name.toLowerCase().includes(query) ||
+     p.description.toLowerCase().includes(query)) &&
+    (category === 'all' || p.category === category)
+  );
+  displayProducts(filtered);
+}
+
+searchBox.addEventListener('input', filterProducts);
+categoryFilter.addEventListener('change', filterProducts);
+</script>
+
+</body>
+</html>
+
